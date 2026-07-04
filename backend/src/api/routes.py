@@ -1,4 +1,5 @@
 from backend.src.api.api_models.requests import IndexRequest, ChatRequest
+from backend.src.api.api_models.responses import ConversationResponseModel
 from backend.src.core.settings import get_settings
 from fastapi import FastAPI, Depends
 from backend.src.rag.retrieval_pipeline import RAGPipeline
@@ -10,9 +11,9 @@ from backend.src.ingestion.ingestion_pipeline import DocumentIngestionPipeline
 from backend.src.ai_engines.embeddings_model import EmbeddingModel
 from contextlib import asynccontextmanager
 from uuid import uuid4
-from logging import Logger
-
-logger = Logger(name="API Logger")
+from fastapi.middleware.cors import CORSMiddleware
+import logging
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
@@ -22,9 +23,20 @@ async def lifespan(app: FastAPI):
     app.state.redis = RedisHistoryStore()
     app.state.embedding_model = EmbeddingModel()
     app.state.settings = get_settings()
-    yield
+    try:
+        yield
+    finally:
+        del app.state.embedding_model
+        logging.info("Shutting down backend application")
 
 app = FastAPI(lifespan=lifespan)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[get_settings().frontend_url],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 def get_qdrant(request: Request) -> QdrantStore:
@@ -57,11 +69,12 @@ async def chat_endpoint(request: ChatRequest,
                         qdrant: QdrantStore = Depends(get_qdrant),
                         redis: RedisHistoryStore = Depends(get_redis)):
     chat_id = http_request.headers.get("X-chat_id") or str(uuid4())
-    
+
     rag = RAGPipeline(vector_store=qdrant, redis_store=redis)
     headers = {
         "X-Accel-Buffering": "no",
-        "X-chat_id": chat_id
+        "X-chat_id": chat_id,
+        "Access-Control-Expose-Headers": "X-chat_id"
     }
 
     return StreamingResponse(
@@ -69,23 +82,14 @@ async def chat_endpoint(request: ChatRequest,
     )
 
 
-import logging
-logger = logging.getLogger(__name__)
-from pydantic import BaseModel
-from typing import List
-
-class testModel(BaseModel):
-    lista: List
-
 @app.post("/full_history")
 async def history_endpoint(chat_id: str,
-                        redis: RedisHistoryStore = Depends(get_redis)):
+                           redis: RedisHistoryStore = Depends(get_redis)):
     logger.info(f'METHOD INVOKED')
     history = redis.get_full_history(str(chat_id))
     serialized = [
         {"role": msg.type, "content": msg.content}
         for msg in history
     ]
-    logger.info(f'{serialized=}')
 
-    return testModel(lista=serialized)
+    return ConversationResponseModel(conversation=serialized)

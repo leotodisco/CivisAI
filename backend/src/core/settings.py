@@ -10,6 +10,7 @@ ASSETS_DIR = BASE_DIR / "assets"
 
 
 class Settings(BaseSettings):
+    frontend_url: str =Field(default="http://localhost:5173")
     db_url: str = Field(default="")
 
     redis_db_pwd: str = Field(default="")
