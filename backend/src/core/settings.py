@@ -12,6 +12,7 @@ ASSETS_DIR = BASE_DIR / "assets"
 class Settings(BaseSettings):
     frontend_url: str =Field(default="http://localhost:5173")
     db_url: str = Field(default="")
+    redis_db_url: str = Field(default="redis")
 
     redis_db_pwd: str = Field(default="")
     redis_db_user: str = Field(default="")
@@ -22,7 +23,7 @@ class Settings(BaseSettings):
     documents_raw_name: str = Field(default="raw_documents.json")
     documents_chunked_name: str = Field(default="processed_documents.json")
 
-    ollama_url: Optional[str] = Field(default="")
+    ollama_url: Optional[str] = Field(default="http://ollama:11434")
     llm_name: str = Field(default="")
     openai_api_key: Optional[str] = Field(default="")
     embeddings_model_name: str = Field(default="intfloat/multilingual-e5-small")

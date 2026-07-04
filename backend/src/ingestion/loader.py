@@ -1,5 +1,5 @@
 from trafilatura import fetch_url
-from backend.src.core.settings import get_settings
+from src.core.settings import get_settings
 from pathlib import Path
 import json
 from urllib.parse import unquote

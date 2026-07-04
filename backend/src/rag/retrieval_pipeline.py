@@ -1,8 +1,8 @@
-from backend.src.db.qdrant_store import QdrantStore
+from src.db.qdrant_store import QdrantStore
 from qdrant_client.models import QueryResponse
-from backend.src.ai_engines.llm_ollama import LLM
-from backend.src.ai_engines.prompts import user_message_format, SYSTEM_PROMPT
-from backend.src.db.redis_history_store import RedisHistoryStore
+from src.ai_engines.llm_ollama import LLM
+from src.ai_engines.prompts import user_message_format, SYSTEM_PROMPT
+from src.db.redis_history_store import RedisHistoryStore
 from langchain_core.messages import BaseMessage, AIMessage, SystemMessage
 
 

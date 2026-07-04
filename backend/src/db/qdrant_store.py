@@ -1,8 +1,8 @@
 from uuid import uuid4
-from backend.src.core.settings import get_settings
+from src.core.settings import get_settings
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, PointStruct, Payload, VectorParams
-from backend.src.ai_engines.embeddings_model import EmbeddingModel
+from src.ai_engines.embeddings_model import EmbeddingModel
 import numpy as np
 import logging
 

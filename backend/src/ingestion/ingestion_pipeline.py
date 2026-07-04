@@ -1,8 +1,8 @@
 from typing import Optional
-from backend.src.ingestion.loader import extract_html_from_url, normalize_url
-from backend.src.ingestion.splitter import splitter
-from backend.src.ai_engines.embeddings_model import EmbeddingModel
-from backend.src.db.qdrant_store import QdrantStore
+from src.ingestion.loader import extract_html_from_url, normalize_url
+from src.ingestion.splitter import splitter
+from src.ai_engines.embeddings_model import EmbeddingModel
+from src.db.qdrant_store import QdrantStore
 
 class DocumentIngestionPipeline:
     def __init__(self, 

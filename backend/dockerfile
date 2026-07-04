@@ -1,0 +1,16 @@
+FROM python:3.11-slim
+
+
+RUN apt-get update
+
+RUN apt-get install curl -y
+
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+
+WORKDIR /backend
+COPY ./backend .
+ENV PATH=/root/.local/bin:$PATH
+
+RUN uv sync
+
+CMD ["uv", "run", "uvicorn", "src.api.routes:app", "--host", "0.0.0.0", "--reload"]

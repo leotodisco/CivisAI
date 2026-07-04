@@ -1,14 +1,14 @@
-from backend.src.api.api_models.requests import IndexRequest, ChatRequest
-from backend.src.api.api_models.responses import ConversationResponseModel
-from backend.src.core.settings import get_settings
+from src.api.api_models.requests import IndexRequest, ChatRequest
+from src.api.api_models.responses import ConversationResponseModel
+from src.core.settings import get_settings
 from fastapi import FastAPI, Depends
-from backend.src.rag.retrieval_pipeline import RAGPipeline
+from src.rag.retrieval_pipeline import RAGPipeline
 from fastapi import Request, Response
 from fastapi.responses import StreamingResponse
-from backend.src.db.qdrant_store import QdrantStore
-from backend.src.db.redis_history_store import RedisHistoryStore
-from backend.src.ingestion.ingestion_pipeline import DocumentIngestionPipeline
-from backend.src.ai_engines.embeddings_model import EmbeddingModel
+from src.db.qdrant_store import QdrantStore
+from src.db.redis_history_store import RedisHistoryStore
+from src.ingestion.ingestion_pipeline import DocumentIngestionPipeline
+from src.ai_engines.embeddings_model import EmbeddingModel
 from contextlib import asynccontextmanager
 from uuid import uuid4
 from fastapi.middleware.cors import CORSMiddleware
@@ -32,7 +32,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[get_settings().frontend_url],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

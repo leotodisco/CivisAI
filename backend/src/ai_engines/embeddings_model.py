@@ -1,5 +1,5 @@
 from sentence_transformers import SentenceTransformer
-from backend.src.core.settings import get_settings
+from src.core.settings import get_settings
 import numpy as np
 
 class EmbeddingModel:

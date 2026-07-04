@@ -1,5 +1,5 @@
 import redis
-from backend.src.core.settings import get_settings
+from src.core.settings import get_settings
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, BaseMessage
 import json
 from typing import List
@@ -14,7 +14,7 @@ class RedisHistoryStore:
         settings = get_settings()
         try:
             self.redis_store = redis.Redis(
-                host="localhost",
+                host=settings.redis_db_url,
                 port=int(settings.redis_db_port or 6379),
                 decode_responses=True
             )
