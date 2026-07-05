@@ -5,13 +5,23 @@ import numpy as np
 class EmbeddingModel:
     _instance = None
 
+class EmbeddingModel:
+    _instance = None
+
     def __new__(cls):
         if cls._instance is None:
+            from sentence_transformers import SentenceTransformer
+            from src.core.settings import get_settings
+
             cls._instance = super().__new__(cls)
+
             cls._instance.model = SentenceTransformer(
-                get_settings().embeddings_model_name
+                get_settings().embeddings_model_name,
+                device="cpu"
             )
+
             cls.embedding_dim = cls._instance.model.get_embedding_dimension()
+
         return cls._instance
 
     def embed(self, texts: list[str]) -> np.ndarray:

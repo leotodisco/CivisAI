@@ -3,7 +3,11 @@ from src.core.settings import get_settings
 from pathlib import Path
 import json
 from urllib.parse import unquote
+from trafilatura.sitemaps import sitemap_search
+from urllib.parse import urljoin
+import logging
 
+_logger = logging.getLogger(__name__)
 settings = get_settings()
 raw_documents_path: Path = settings.assets_folder_path / settings.documents_raw_name
 
@@ -14,17 +18,17 @@ def normalize_url(url: str) -> str:
 
 def extract_html_from_url(normalized_url: str) -> str:
     try:
-        print(f"{normalized_url=}")
         html_code = fetch_url(normalized_url)
-        print(f"{html_code=}")
         return html_code
     except Exception as e:
-        print(f"{str(e)=}")
-        return ""
+        raise e
 
 
-def find_urls_form_sitemap(base_url: str) -> str:
-    pass
+def find_urls_from_sitemap(sitemap_url: str) -> list[str]:
+    return sitemap_search(sitemap_url)
+
+def get_sitemap_from_base_url(base_url: str) -> str:
+    return urljoin(base_url, "sitemap.xml")
 
 
 def save_document_local(normalized_url: str, document_content: str) -> None:

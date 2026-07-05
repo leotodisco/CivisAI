@@ -27,6 +27,19 @@ services:
       - ollama
     env_file:
       - ./backend/src/core/.env
+
+  rq-worker:
+    build:
+      context: .
+      dockerfile: ./backend/dockerfile
+    command: ["uv", "run", "rq", "worker", "JobsQueue", "--url", "redis://redis:6379"]
+    depends_on:
+      - redis
+      - qdrant
+      - ollama
+    env_file:
+      - ./backend/src/core/.env
+        
   frontend:
     build:
       context: .

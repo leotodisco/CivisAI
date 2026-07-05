@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from typing import List, Optional
 
 class IndexRequest(BaseModel):
-    urls: List[str]
+    url: str
 
 
 class ChatRequest(BaseModel):

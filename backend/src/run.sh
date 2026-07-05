@@ -6,4 +6,7 @@ docker run -p 6379:6379 redis:latest &
 
 docker run -p 6333:6333 qdrant/qdrant &
 
-python -m uvicorn api.routes:app --reload &
+pwd
+cwd
+
+python -m uvicorn src.api.routes:app --reload &
