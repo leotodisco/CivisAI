@@ -1,17 +1,23 @@
 from langchain_ollama import ChatOllama
-from src.ai_engines.prompts import user_message_format, SYSTEM_PROMPT
+from langchain_openai import ChatOpenAI
 from typing import Sequence
-from langchain_core.messages import BaseMessage, AIMessage, SystemMessage
-from src.core.settings import get_settings
+from langchain_core.messages import BaseMessage, AIMessage
+from src.core.settings import get_settings, LLM_MODE
 
 
 class LLM:
     def __init__(self):
         settings = get_settings()
-        self.model = ChatOllama(
-            base_url=settings.ollama_url,
-            model="qwen3:0.6b"
-        )
+        if settings.llm_mode == LLM_MODE.OLLAMA:
+            self.model = ChatOllama(
+                base_url=settings.ollama_url,
+                model="qwen3:0.6b"
+            )
+        else:
+            self.model = ChatOpenAI(
+                model=settings.llm_name,
+                api_key=settings.openai_api_key
+            )
 
     async def stream_conversation(self, conversation: Sequence[BaseMessage]):
         ai_message = ''
@@ -22,6 +28,3 @@ class LLM:
 
         conversation.append(AIMessage(ai_message))
         yield "data: [DONE]\n\n"
-
-
-
